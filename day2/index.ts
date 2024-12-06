@@ -1,40 +1,27 @@
 import fs from 'fs';
 
-const solve1 = (input: string) => {
-  const lines = input.split("\n");
-  const safeReports = lines.map(row => {
-    const values = row.split(" ");
-    const safe = reportIsSafe(values);
-    console.log(`Report: ${values} - ${safe}`);
-    return safe;
-  });
-  return safeReports.filter(el => el === true).length
-};
+function isSafe(levels: number[]): boolean {
+  const differences = levels.slice(1).map((level, index) => level - levels[index]);
+  const allIncreasing = differences.every(diff => diff > 0);
+  const allDecreasing = differences.every(diff => diff < 0);
+  const withinRange = differences.every(diff => Math.abs(diff) >= 1 && Math.abs(diff) <= 3);
+  return (allIncreasing || allDecreasing) && withinRange;
+}
 
-const reportIsSafe = (numbers: number[]) => {
-  if (!numbers || numbers.length < 1 || numbers[0] === numbers[1])
-    return false;
-  const direction = numbers[0] < numbers[1] ? '+' : '-';
-  for (let i = 1; i < numbers.length; i++) {
-    const curr = numbers[i];
-    const previous = numbers[i - 1];
-    if (Math.abs(previous - curr) > 3)
-      return false;
+function countSafeReports(reports: number[][]): number {
+  return reports.filter(isSafe).length;
+}
 
-    if (direction === '+' && previous >= curr)
-      return false;
+function solve1(input: string): void {
+  const reports = input.trim().split("\n").map(line => line.split(" ").map(Number));
+  console.log(countSafeReports(reports));
+}
 
-    if (direction === '-' && previous <= curr)
-      return false;
-  }
-  return true;
-};
-
-// console.log(solve1(`7 6 4 2 1
+// const input = `7 6 4 2 1
 // 1 2 7 8 9
 // 9 7 6 2 1
 // 1 3 2 4 5
 // 8 6 4 4 1
-// 1 3 6 7 9`));
-
-console.log(solve1(fs.readFileSync("input.txt").toString()));
+// 1 3 6 7 9`;
+const input = fs.readFileSync("input.txt").toString();
+solve1(input);
