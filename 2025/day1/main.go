@@ -32,9 +32,13 @@ func main() {
 					log.Fatal("cabum")
 				}
 				if rotations > DIAL_MAX {
+					password = password + rotations/(DIAL_MAX+1)
 					rotations = rotations % (DIAL_MAX + 1)
 				}
 				if (dial - rotations) < DIAL_MIN {
+					if dial != 0 {
+						password = password + 1
+					}
 					dial = DIAL_MAX - rotations + dial + 1
 				} else {
 					dial = dial - rotations
@@ -47,10 +51,14 @@ func main() {
 					log.Fatal("cabum")
 				}
 				if rotations > DIAL_MAX {
+					password = password + rotations/(DIAL_MAX+1)
 					rotations = rotations % (DIAL_MAX + 1)
 				}
 				if (dial + rotations) > DIAL_MAX {
 					dial = dial + rotations - DIAL_MAX - 1
+					if dial != 0 {
+						password = password + 1
+					}
 				} else {
 					dial = dial + rotations
 				}
